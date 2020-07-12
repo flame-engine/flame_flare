@@ -1,28 +1,31 @@
 part of flame_flare;
 
-/// A [Particle] that renders a [FlareActorComponent].
+/// A [Particle] that renders a [FlareActorAnimation].
 class FlareParticle extends Particle {
-  final FlareActorComponent flare;
+  final FlareActorAnimation flareAnimation;
 
   FlareParticle({
-    @required this.flare,
+    @required this.flareAnimation,
     double lifespan,
   }) : super(
-    lifespan: lifespan,
-  );
+          lifespan: lifespan,
+        ) {
+    flareAnimation.init();
+  }
 
   @override
   void render(Canvas canvas) {
     canvas.save();
-    canvas.translate(-flare.width / 2, -flare.height / 2);
-    flare.render(canvas);
+    flareAnimation.render(
+      canvas,
+      Offset(-flareAnimation.width / 2, -flareAnimation.height / 2),
+    );
     canvas.restore();
   }
 
   @override
   void update(double dt) {
     super.update(dt);
-    flare.update(dt);
+    flareAnimation.advance(dt);
   }
 }
-

@@ -1,7 +1,7 @@
 library flame_flare;
 
 import 'dart:math';
-import 'dart:ui';
+import 'dart:ui' as ui;
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
@@ -19,5 +19,6 @@ import 'package:flame/components/component.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/particle.dart';
 
+part 'src/flare_animation.dart';
 part 'src/flare_actor_component.dart';
 part 'src/flare_particle.dart';
