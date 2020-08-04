@@ -32,4 +32,14 @@ class FlareActorComponent extends PositionComponent {
     flareAnimation.destroy();
     super.onDestroy();
   }
+
+  set width(double w) {
+    super.width = w;
+    flareAnimation.width = w;
+  }
+
+  set height(double h) {
+    super.height = h;
+    flareAnimation.height = h;
+  }
 }

@@ -36,7 +36,7 @@ class MyGame extends BaseGame with TapDetector, DoubleTapDetector {
     minionComponent.y = 0;
     add(BGComponent());
     add(minionComponent);
-    minionComponent.playStand();
+    minionController.playStand();
   }
 
   @override
@@ -44,7 +44,7 @@ class MyGame extends BaseGame with TapDetector, DoubleTapDetector {
 
   @override
   void onTap() {
-    minionComponent.playJump();
+    minionController.playJump();
   }
 
   @override
@@ -71,33 +71,42 @@ class MyGame extends BaseGame with TapDetector, DoubleTapDetector {
   }
 }
 
-class MinionController extends FlareControls {}
+class MinionController extends FlareControls {
+  void playStand() {
+    play("Stand");
+  }
 
-class MinionComponent extends FlareActorComponent {
+  void playDance() {
+    play("Dance");
+  }
+
+  void playJump() {
+    play("Jump");
+  }
+
+  void playWave() {
+    play("Wave");
+  }
+}
+
+class MinionComponent extends FlareActorComponent with Resizable {
   MinionController minionController;
 
   MinionComponent(this.minionController)
       : super(FlareActorAnimation(
           'assets/Bob_Minion.flr',
           controller: minionController,
+          fit: BoxFit.contain,
+          alignment: Alignment.bottomCenter,
           width: 306,
-          height: 228,
+          height: 500,
         ));
 
-  void playStand() {
-    minionController.play("Stand");
-  }
-
-  void playDance() {
-    minionController.play("Dance");
-  }
-
-  void playJump() {
-    minionController.play("Jump");
-  }
-
-  void playWave() {
-    minionController.play("Wave");
+  @override
+  void resize(Size size) {
+    super.resize(size);
+    width = size.width;
+    height = size.height;
   }
 }
 
