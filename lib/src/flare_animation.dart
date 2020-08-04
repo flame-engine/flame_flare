@@ -6,8 +6,8 @@ part of flame_flare;
 class FlareActorAnimation {
   FlareActorAnimation(
     this.filename, {
-    @required double width,
-    @required double height,
+    @required this.width,
+    @required this.height,
     this.boundsNode,
     this.animation,
     this.fit = BoxFit.contain,
@@ -21,15 +21,12 @@ class FlareActorAnimation {
     this.sizeFromArtboard = false,
     this.artboard,
     this.useAntialias = true,
-  }) : flareProvider = null {
-    this.width = width;
-    this.height = height;
-  }
+  }) : flareProvider = null;
 
   FlareActorAnimation.asset(
     this.flareProvider, {
-    @required double width,
-    @required double height,
+    @required this.width,
+    @required this.height,
     this.boundsNode,
     this.animation,
     this.fit = BoxFit.contain,
@@ -43,10 +40,7 @@ class FlareActorAnimation {
     this.sizeFromArtboard = false,
     this.artboard,
     this.useAntialias = true,
-  }) : filename = null {
-    this.width = width;
-    this.height = height;
-  }
+  }) : filename = null;
 
   FlareActorRenderObject _renderObject;
 
@@ -123,6 +117,8 @@ class FlareActorAnimation {
   }
 
   void render(Canvas canvas, Offset position) {
+    assert(_renderObject != null,
+        "FlareActorAnimation was rendered before initialization. Run FlareActorAnimation.init() before rendering it");
     final bounds = _renderObject.aabb;
     if (bounds != null) {
       _paintActor(canvas, bounds, position);
@@ -130,10 +126,14 @@ class FlareActorAnimation {
   }
 
   void advance(double dt) {
+    assert(_renderObject != null,
+        "FlareActorAnimation was advanced before initialization. Run FlareActorAnimation.init() before calling .advance");
     _renderObject.advance(dt);
   }
 
   void destroy() {
+    assert(_renderObject != null,
+        "FlareActorAnimation was destroyed before initialization. Run FlareActorAnimation.init() before destroying it");
     _renderObject.dispose();
   }
 

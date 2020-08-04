@@ -8,12 +8,14 @@ class FlareActorComponent extends PositionComponent {
 
   FlareActorComponent(this.flareAnimation);
 
+  @mustCallSuper
   @override
   void onMount() {
     super.onMount();
     flareAnimation.init();
   }
 
+  @mustCallSuper
   @override
   void render(Canvas canvas) {
     prepareCanvas(canvas);
@@ -21,12 +23,14 @@ class FlareActorComponent extends PositionComponent {
     flareAnimation.render(canvas, toPosition().toOffset());
   }
 
+  @mustCallSuper
   @override
   void update(double dt) {
     super.update(dt);
     flareAnimation.advance(dt);
   }
 
+  @mustCallSuper
   @override
   void onDestroy() {
     flareAnimation.destroy();

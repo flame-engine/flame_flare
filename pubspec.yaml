@@ -7,14 +7,9 @@ environment:
   sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
-  flame: 0.24.0
+  flame: '>=0.24.0 <1.0.0'
   flare_flutter: ^2.0.5
   flutter:
-    sdk: flutter
-
-dev_dependencies:
-  dashbook: ^0.0.6
-  flutter_test:
     sdk: flutter
 
 flutter:

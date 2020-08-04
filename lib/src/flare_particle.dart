@@ -7,9 +7,7 @@ class FlareParticle extends Particle {
   FlareParticle({
     @required this.flareAnimation,
     double lifespan,
-  }) : super(
-          lifespan: lifespan,
-        ) {
+  }) : super(lifespan: lifespan) {
     flareAnimation.init();
   }
 
