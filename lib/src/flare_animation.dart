@@ -20,6 +20,7 @@ class FlareActorAnimation {
     this.shouldClip = true,
     this.sizeFromArtboard = false,
     this.artboard,
+    this.useAntialias = true,
   }) : flareProvider = null {
     this.width = width;
     this.height = height;
@@ -41,6 +42,7 @@ class FlareActorAnimation {
     this.shouldClip = true,
     this.sizeFromArtboard = false,
     this.artboard,
+    this.useAntialias = true,
   }) : filename = null {
     this.width = width;
     this.height = height;
@@ -48,7 +50,7 @@ class FlareActorAnimation {
 
   FlareActorRenderObject _renderObject;
 
-  // Flare only allows the renderbox to be loaded if it is considered "attached", we need this ugly dumb thing here to do that.
+  // Flare only allows the render box to be loaded if it is considered "attached", we need this ugly dumb thing here to do that.
   final _pipelineOwner = _FlareActorComponentPipelineOwner();
 
   /// The animation size base.
@@ -97,6 +99,9 @@ class FlareActorAnimation {
   /// Mirror to [FlareActor.sizeFromArtboard]
   final bool sizeFromArtboard;
 
+  /// When false disables antialiasing on drawables.
+  final bool useAntialias;
+
   void init() {
     _renderObject = FlareActorRenderObject()
       ..assetProvider =
@@ -111,7 +116,8 @@ class FlareActorAnimation {
       ..shouldClip = shouldClip
       ..boundsNodeName = boundsNode
       ..useIntrinsicSize = sizeFromArtboard
-      ..artboardName = artboard;
+      ..artboardName = artboard
+      ..useAntialias = useAntialias;
 
     _loadRenderBox();
   }
@@ -137,8 +143,6 @@ class FlareActorAnimation {
       _renderObject.coldLoad();
     }
   }
-
-
 
   // Paint procedures ported from FlareRenderBox.paint with some changes that
   // makes sense on a flame context
