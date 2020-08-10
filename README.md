@@ -1,11 +1,10 @@
 [![Pub](https://img.shields.io/pub/v/flame_flare.svg?style=popout)](https://pub.dartlang.org/packages/flame_flare)
-![Test](https://github.com/flame-engine/flame_flare/workflows/Test/badge.svg?branch=master&event=push)  
+![Test](https://github.com/flame-engine/flame_flare/workflows/Test/badge.svg?branch=master&event=push)
 [![Discord](https://img.shields.io/discord/509714518008528896.svg)](https://discord.gg/pxrBmy4)
 
 # Flame Flare
 
 Integrate awesome [Flare animations](https://rive.app/explore/popular/trending/all) to your [Flame](https://flame-engine.org/) game.
-
 
 
 ## Install
@@ -51,3 +50,13 @@ class MyAnimationComponent extends FlareActorComponent {
 ```
 
 See the example app for a slightly more complex usage.
+
+## Support
+
+The simplest way to show us your support is by giving the project a star.
+
+You can also support us by becoming a patron on Patreon:
+[![Patreon](https://c5.patreon.com/external/logo/become_a_patron_button.png)](https://www.patreon.com/fireslime)
+
+Or by making a single donation by buying us a coffee:
+[![Buy Me A Coffee](https://user-images.githubusercontent.com/835641/60540201-fcd7fa00-9ce4-11e9-87ec-1e98568e9f58.png)](https://www.buymeacoffee.com/fireslime)

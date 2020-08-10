@@ -58,7 +58,7 @@ class MyGame extends BaseGame with TapDetector, DoubleTapDetector {
     } else {
       _currentAnimation++;
     }
-    minionComponent.minionController.play(_animations[_currentAnimation]);
+    minionController.play(_animations[_currentAnimation]);
   }
 
   @override
