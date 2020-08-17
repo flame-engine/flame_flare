@@ -4,9 +4,14 @@ part of flame_flare;
 class FlareParticle extends Particle {
   final FlareActorAnimation flareAnimation;
 
+  /// The animation size base.
+  double width = 0.0, height = 0.0;
+
   FlareParticle({
     @required this.flareAnimation,
     double lifespan,
+    @required this.width,
+    @required this.height,
   }) : super(lifespan: lifespan) {
     flareAnimation.init();
   }
@@ -14,10 +19,8 @@ class FlareParticle extends Particle {
   @override
   void render(Canvas canvas) {
     canvas.save();
-    flareAnimation.render(
-      canvas,
-      Offset(-flareAnimation.width / 2, -flareAnimation.height / 2),
-    );
+    final size = ui.Size(width, height);
+    flareAnimation.render(canvas, size);
     canvas.restore();
   }
 

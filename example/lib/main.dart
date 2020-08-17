@@ -93,20 +93,31 @@ class MinionComponent extends FlareActorComponent with Resizable {
   MinionController minionController;
 
   MinionComponent(this.minionController)
-      : super(FlareActorAnimation(
-          'assets/Bob_Minion.flr',
-          controller: minionController,
-          fit: BoxFit.contain,
-          alignment: Alignment.bottomCenter,
-          width: 306,
-          height: 500,
-        ));
+      : super(
+          FlareActorAnimation(
+            'assets/Bob_Minion.flr',
+            controller: minionController,
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.center,
+          ),
+          width: 300,
+          height: 300,
+        );
+
+  @override
+  void render(Canvas c) {
+    final rect = Rect.fromLTWH(x, y, width, height);
+    final paint = Paint()..color = const Color(0xFFfafbfc);
+    c.drawRect(rect, paint);
+    super.render(c);
+  }
 
   @override
   void resize(Size size) {
     super.resize(size);
-    width = size.width;
-    height = size.height;
+
+    x = size.width / 2 - width / 2;
+    y = size.height / 2 - height / 2;
   }
 }
 

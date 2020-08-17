@@ -6,7 +6,14 @@ class _FlareActorComponentPipelineOwner extends PipelineOwner {}
 class FlareActorComponent extends PositionComponent {
   final FlareActorAnimation flareAnimation;
 
-  FlareActorComponent(this.flareAnimation);
+  /// The animation size base.
+  double width = 0.0, height = 0.0;
+
+  FlareActorComponent(
+    this.flareAnimation, {
+    @required this.width,
+    @required this.height,
+  });
 
   @mustCallSuper
   @override
@@ -19,8 +26,8 @@ class FlareActorComponent extends PositionComponent {
   @override
   void render(Canvas canvas) {
     prepareCanvas(canvas);
-    canvas.save();
-    flareAnimation.render(canvas, toPosition().toOffset());
+    final size = ui.Size(width, height);
+    flareAnimation.render(canvas, size);
   }
 
   @mustCallSuper
@@ -35,15 +42,5 @@ class FlareActorComponent extends PositionComponent {
   void onDestroy() {
     flareAnimation.destroy();
     super.onDestroy();
-  }
-
-  set width(double w) {
-    super.width = w;
-    flareAnimation.width = w;
-  }
-
-  set height(double h) {
-    super.height = h;
-    flareAnimation.height = h;
   }
 }
