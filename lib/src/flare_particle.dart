@@ -4,20 +4,28 @@ part of flame_flare;
 class FlareParticle extends Particle {
   final FlareActorAnimation flareAnimation;
 
+  /// The animation size base.
+  double width = 0.0, height = 0.0;
+
+  final GetSize getSize;
+
   FlareParticle({
     @required this.flareAnimation,
     double lifespan,
-  }) : super(lifespan: lifespan) {
+    @required this.width,
+    @required this.height,
+  })  : getSize = memo2(
+          (double width, double height) => ui.Size(width, height),
+        ),
+        super(lifespan: lifespan) {
     flareAnimation.init();
   }
 
   @override
   void render(Canvas canvas) {
     canvas.save();
-    flareAnimation.render(
-      canvas,
-      Offset(-flareAnimation.width / 2, -flareAnimation.height / 2),
-    );
+    final size = ui.Size(width, height);
+    flareAnimation.render(canvas, size);
     canvas.restore();
   }
 
