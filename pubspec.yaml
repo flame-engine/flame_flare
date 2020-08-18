@@ -11,6 +11,7 @@ dependencies:
   flame: '>=0.24.0 <1.0.0'
   flare_flutter: ^2.0.6
   flare_dart: ^2.3.4
+  memoize: 2.0.0
   flutter:
     sdk: flutter
 

@@ -18,6 +18,7 @@ import 'package:flare_dart/math/vec2d.dart';
 import 'package:flame/components/component.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/particle.dart';
+import 'package:memoize/memoize.dart';
 
 part 'src/flare_animation.dart';
 part 'src/flare_actor_component.dart';

@@ -7,12 +7,17 @@ class FlareParticle extends Particle {
   /// The animation size base.
   double width = 0.0, height = 0.0;
 
+  final GetSize getSize;
+
   FlareParticle({
     @required this.flareAnimation,
     double lifespan,
     @required this.width,
     @required this.height,
-  }) : super(lifespan: lifespan) {
+  })  : getSize = memo2(
+          (double width, double height) => ui.Size(width, height),
+        ),
+        super(lifespan: lifespan) {
     flareAnimation.init();
   }
 
