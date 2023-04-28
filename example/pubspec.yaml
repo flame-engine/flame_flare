@@ -1,20 +1,22 @@
 name: flame_flare_example
 description: Flame sample for using Flare animations
-
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
-
-version: 1.0.0+1
+publish_to: 'none'
+version: 0.1.0
 
 environment:
-  sdk: ">=2.7.0 <3.0.0"
+  sdk: ">=2.18.0 <3.0.0"
+  flutter: ">=3.3.0"
 
 dependencies:
-  flame: 0.24.0
+  flame: ^1.7.3
   flame_flare:
     path: ../
+  flare_flutter: ^3.0.2
   flutter:
     sdk: flutter
 
+dev_dependencies:
+  flame_lint: ^0.2.0+2
 flutter:
   assets:
     - assets/Bob_Minion.flr

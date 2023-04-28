@@ -1,11 +1,23 @@
-part of flame_flare;
+import 'dart:math';
 
-/// A class that wraps all the settings of a flare animation from [filename].
+import 'package:flame/extensions.dart';
+import 'package:flame/flame.dart';
+import 'package:flare_flutter/asset_provider.dart';
+import 'package:flare_flutter/base/math/aabb.dart';
+import 'package:flare_flutter/flare.dart';
+import 'package:flare_flutter/flare_actor.dart';
+import 'package:flare_flutter/flare_controller.dart';
+import 'package:flare_flutter/provider/asset_flare.dart';
+import 'package:flutter/rendering.dart';
+
+class _FlareActorComponentPipelineOwner extends PipelineOwner {}
+
+/// A class that wraps all the settings of a flare animation from [fileName].
 ///
 /// It has a similar API to the [FlareActor] widget.
 class FlareActorAnimation {
   FlareActorAnimation(
-    this.filename, {
+    this.fileName, {
     this.boundsNode,
     this.animation,
     this.fit = BoxFit.contain,
@@ -36,25 +48,26 @@ class FlareActorAnimation {
     this.sizeFromArtboard = false,
     this.artboard,
     this.useAntialias = true,
-  }) : filename = null;
+  }) : fileName = null;
 
-  FlareActorRenderObject _renderObject;
+  FlareActorRenderObject? _renderObject;
 
-  // Flare only allows the render box to be loaded if it is considered "attached", we need this ugly dumb thing here to do that.
+  // Flare only allows the render box to be loaded if it is considered
+  // "attached", we need this ugly dumb thing here to do that.
   final _pipelineOwner = _FlareActorComponentPipelineOwner();
 
   // Fields are ported from flare actor widget
   /// Mirror to [FlareActor.filename]
-  final String filename;
+  final String? fileName;
 
   /// Mirror to [FlareActor.flareProvider]
-  final AssetProvider flareProvider;
+  final AssetProvider? flareProvider;
 
   /// Mirror to [FlareActor.artboard]
-  final String artboard;
+  final String? artboard;
 
   /// Mirror to [FlareActor.animation]
-  final String animation;
+  final String? animation;
 
   /// Mirror to [FlareActor.snapToEnd]
   final bool snapToEnd;
@@ -72,16 +85,16 @@ class FlareActorAnimation {
   final bool shouldClip;
 
   /// Mirror to [FlareActor.controller]
-  final FlareController controller;
+  final FlareController? controller;
 
   /// Mirror to [FlareActor.callback]
-  final FlareCompletedCallback callback;
+  final FlareCompletedCallback? callback;
 
   /// Mirror to [FlareActor.color]
-  final Color color;
+  final Color? color;
 
   /// Mirror to [FlareActor.boundsNode]
-  final String boundsNode;
+  final String? boundsNode;
 
   /// Mirror to [FlareActor.sizeFromArtboard]
   final bool sizeFromArtboard;
@@ -90,9 +103,14 @@ class FlareActorAnimation {
   final bool useAntialias;
 
   void init() {
-    _renderObject = FlareActorRenderObject()
+    _renderObject = _generateRenderObject();
+  }
+
+  FlareActorRenderObject _generateRenderObject() {
+    final renderObject = FlareActorRenderObject()
+      // either flareProvider or fileName must be provided
       ..assetProvider =
-          flareProvider ?? AssetFlare(bundle: Flame.bundle, name: filename)
+          flareProvider ?? AssetFlare(bundle: Flame.bundle, name: fileName!)
       ..alignment = alignment
       ..animationName = animation
       ..snapToEnd = snapToEnd
@@ -106,42 +124,53 @@ class FlareActorAnimation {
       ..artboardName = artboard
       ..useAntialias = useAntialias;
 
-    _loadRenderBox();
+    _loadRenderBox(renderObject);
+    return renderObject;
   }
 
-  void render(Canvas canvas, ui.Size size) {
-    assert(_renderObject != null,
-        "FlareActorAnimation was rendered before initialization. Run FlareActorAnimation.init() before rendering it");
-    final bounds = _renderObject.aabb;
-
-    if (bounds != null) {
-      _paintActor(canvas, bounds, size);
+  void render(Canvas canvas, Vector2 size) {
+    final renderObject = _renderObject;
+    if (renderObject == null) {
+      throw 'FlareActorAnimation was rendered before initialization. '
+          'Run FlareActorAnimation.init() before rendering it';
     }
+    final bounds = renderObject.aabb;
+    _paintActor(canvas, bounds, size);
   }
 
   void advance(double dt) {
-    assert(_renderObject != null,
-        "FlareActorAnimation was advanced before initialization. Run FlareActorAnimation.init() before calling .advance");
-    _renderObject.advance(dt);
+    final renderObject = _renderObject;
+    if (renderObject == null) {
+      throw 'FlareActorAnimation was advanced before initialization. '
+          'Run FlareActorAnimation.init() before calling .advance';
+    }
+    renderObject.advance(dt);
   }
 
   void destroy() {
-    assert(_renderObject != null,
-        "FlareActorAnimation was destroyed before initialization. Run FlareActorAnimation.init() before destroying it");
-    _renderObject.dispose();
+    final renderObject = _renderObject;
+    if (renderObject == null) {
+      throw 'FlareActorAnimation was destroyed before initialization. '
+          'Run FlareActorAnimation.init() before destroying it';
+    }
+    renderObject.dispose();
   }
 
-  void _loadRenderBox() {
-    _renderObject.attach(_pipelineOwner);
-    if (!_renderObject.warmLoad()) {
-      _renderObject.coldLoad();
+  void _loadRenderBox(FlareActorRenderObject renderObject) {
+    renderObject.attach(_pipelineOwner);
+    if (!renderObject.warmLoad()) {
+      renderObject.coldLoad();
     }
   }
 
   // Paint procedures ported from FlareRenderBox.paint with some changes that
   // makes sense on a flame context
-  void _paintActor(Canvas c, AABB bounds, ui.Size size) {
-    final position = Offset.zero;
+  void _paintActor(Canvas c, AABB bounds, Vector2 size) {
+    final renderObject = _renderObject;
+    if (renderObject == null) {
+      throw 'FlareActorAnimation was rendered before initialization. '
+          'Run FlareActorAnimation.init() before rendering it';
+    }
 
     final contentWidth = bounds[2] - bounds[0];
     final contentHeight = bounds[3] - bounds[1];
@@ -152,67 +181,69 @@ class FlareActorAnimation {
         contentHeight / 2.0 -
         (alignment.y * contentHeight / 2.0);
 
-    double scaleX = 1.0, scaleY = 1.0;
+    var scaleX = 1.0;
+    var scaleY = 1.0;
 
     c.save();
     // pre paint
     if (shouldClip) {
-      c.clipRect(position & size);
+      c.clipRect(size.toRect());
     }
 
-    // boxfit
+    // box fit
     switch (fit) {
       case BoxFit.fill:
-        scaleX = size.width / contentWidth;
-        scaleY = size.height / contentHeight;
+        scaleX = size.x / contentWidth;
+        scaleY = size.y / contentHeight;
         break;
       case BoxFit.contain:
-        double minScale =
-            min(size.width / contentWidth, size.height / contentHeight);
+        final minScale = min(size.x / contentWidth, size.y / contentHeight);
         scaleX = scaleY = minScale;
         break;
       case BoxFit.cover:
-        double maxScale =
-            max(size.width / contentWidth, size.height / contentHeight);
+        final maxScale = max(size.x / contentWidth, size.y / contentHeight);
         scaleX = scaleY = maxScale;
         break;
       case BoxFit.fitHeight:
-        double minScale = size.height / contentHeight;
+        final minScale = size.y / contentHeight;
         scaleX = scaleY = minScale;
         break;
       case BoxFit.fitWidth:
-        double minScale = size.width / contentWidth;
+        final minScale = size.x / contentWidth;
         scaleX = scaleY = minScale;
         break;
       case BoxFit.none:
         scaleX = scaleY = 1.0;
         break;
       case BoxFit.scaleDown:
-        double minScale =
-            min(size.width / contentWidth, size.height / contentHeight);
+        final minScale = min(size.x / contentWidth, size.y / contentHeight);
         scaleX = scaleY = minScale < 1.0 ? minScale : 1.0;
         break;
     }
 
+    final halfSize = size / 2;
     final transform = Mat2D();
-    transform[4] = size.width / 2.0 + (alignment.x * size.width / 2.0);
-    transform[5] = size.height / 2.0 + (alignment.y * size.height / 2.0);
+    transform[4] = halfSize.x + (alignment.x * halfSize.x);
+    transform[5] = halfSize.y + (alignment.y * halfSize.y);
     Mat2D.scale(transform, transform, Vec2D.fromValues(scaleX, scaleY));
     final center = Mat2D();
     center[4] = x;
     center[5] = y;
     Mat2D.multiply(transform, transform, center);
 
-    c.translate(
-      size.width / 2.0 + (alignment.x * size.width / 2.0),
-      size.height / 2.0 + (alignment.y * size.height / 2.0),
+    c.translateVector(
+      halfSize +
+          Vector2(
+            alignment.x * halfSize.x,
+            alignment.y * halfSize.y,
+          ),
     );
 
     c.scale(scaleX, scaleY);
     c.translate(x, y);
 
-    _renderObject.paintFlare(c, transform);
+    renderObject.paintFlare(c, transform);
     c.restore();
-    _renderObject.postPaint(c, position);
+    renderObject.postPaint(c, Offset.zero);
   }
 }
