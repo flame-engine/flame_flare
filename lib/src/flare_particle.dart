@@ -1,37 +1,32 @@
-part of flame_flare;
+import 'package:flame/extensions.dart';
+import 'package:flame/particles.dart';
+
+import 'package:flame_flare/flame_flare.dart';
 
 /// A [Particle] that renders a [FlareActorAnimation].
 class FlareParticle extends Particle {
   final FlareActorAnimation flareAnimation;
 
   /// The animation size base.
-  double width = 0.0, height = 0.0;
-
-  final GetSize getSize;
+  Vector2 size;
 
   FlareParticle({
-    @required this.flareAnimation,
-    double lifespan,
-    @required this.width,
-    @required this.height,
-  })  : getSize = memo2(
-          (double width, double height) => ui.Size(width, height),
-        ),
-        super(lifespan: lifespan) {
+    required this.flareAnimation,
+    required this.size,
+    super.lifespan,
+  }) {
     flareAnimation.init();
   }
 
   @override
   void render(Canvas canvas) {
     canvas.save();
-    final size = ui.Size(width, height);
     flareAnimation.render(canvas, size);
     canvas.restore();
   }
 
   @override
   void update(double dt) {
-    super.update(dt);
     flareAnimation.advance(dt);
   }
 }
