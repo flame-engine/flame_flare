@@ -1,3 +1,6 @@
+> **Warning**
+> This package is deprecated and no longer supported. Please use [flame_rive](https://pub.dev/packages/flame_rive) instead.
+
 <!-- markdownlint-disable MD013 -->
 <p align="center">
   <a href="https://flame-engine.org">
