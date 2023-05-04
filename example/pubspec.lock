@@ -31,7 +31,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "1.5.4"
+    version: "1.5.4+1"
   flame_lint:
     dependency: "direct dev"
     description:
